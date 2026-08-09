@@ -1,26 +1,176 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* True black surface — flat, minimal, no blue cast */
+  --color-shell-950: #000000;
+  --color-shell-900: #070707;
+  --color-shell-850: #0d0d0d;
+  --color-shell-800: #141414;
+  --color-shell-700: #1f1f1f;
+  --color-shell-600: #2a2a2a;
+
+  --color-line: #1c1c1c;
+  --color-line-soft: #141414;
+
+  --color-text-hi: #f2f2f2;
+  --color-text: #b4b4b4;
+  --color-text-dim: #8a8a8a;
+  --color-text-faint: #5e5e5e;
+
+  /* Brand — matches the storefront */
+  --color-brand-400: #bd6bdd;
+  --color-brand-500: #a13fc9;
+  --color-brand-600: #8425ab;
+  --color-brand-700: #6d1b8c;
+
+  --color-accent-400: #f45fa4;
+  --color-accent-500: #e5147e;
+  --color-accent-600: #c9106c;
+
+  /* Status */
+  --color-ok-400: #34d399;
+  --color-ok-500: #10b981;
+  --color-warn-400: #fbbf24;
+  --color-warn-500: #f59e0b;
+  --color-bad-400: #f87171;
+  --color-bad-500: #ef4444;
+  --color-info-400: #60a5fa;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --shadow-panel: none;
+  --shadow-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.9);
+
+  --animate-shimmer: shimmer 1.4s linear infinite;
+  --animate-rise: rise 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-shell-950);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  /* Compact base: the dashboard is a data tool, not a reading surface */
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.006em;
+}
+
+/* Numeric columns line up in tables */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-shell-700) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-shell-700);
+  border-radius: 999px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-shell-850) 25%,
+    var(--color-shell-800) 37%,
+    var(--color-shell-850) 63%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Inputs: borderless by default, a hairline appears only on hover/focus */
+.field {
+  height: 2.25rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background: var(--color-shell-850);
+  padding-inline: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-text-hi);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+.field::placeholder {
+  color: var(--color-text-faint);
+  font-weight: 400;
+}
+.field:hover:not(:focus) {
+  border-color: var(--color-line);
+}
+.field:focus {
+  border-color: var(--color-shell-600);
+  background: var(--color-shell-800);
+}
+.field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+textarea.field {
+  height: auto;
+  padding-block: 0.625rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+select.field {
+  cursor: pointer;
+}
+/* Number spinners add visual noise for no benefit here */
+.field[type="number"]::-webkit-inner-spin-button,
+.field[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.field[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.3125rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Permanently hide Next.js Dev Tools button / portal */
+nextjs-portal,
+[data-nextjs-toast],
+[data-next-badge],
+.nextjs-toast-errors-parent {
+  display: none !important;
 }
