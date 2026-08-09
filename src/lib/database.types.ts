@@ -6,7 +6,7 @@
  *   npx supabase gen types typescript --project-id <ref> > supabase/types.ts
  */
 
-export type OrderStatus = "pending" | "confirmed" | "cancelled";
+export type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
 export type CategoryRow = {
   id: string;
@@ -116,6 +116,8 @@ export type OrderRow = {
   payment_ref: string;
   payment_note: string;
   status: OrderStatus;
+  shipped_at: string | null;
+  delivered_at: string | null;
   admin_note: string;
   created_at: string;
   updated_at: string;
@@ -162,6 +164,8 @@ export type DashboardStats = {
   orders_total: number;
   orders_pending: number;
   orders_confirmed: number;
+  orders_shipped: number;
+  orders_delivered: number;
   orders_cancelled: number;
   revenue_total: number;
   revenue_pending: number;

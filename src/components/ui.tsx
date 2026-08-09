@@ -114,6 +114,8 @@ export function LinkButton({
 const STATUS_STYLE: Record<OrderStatus, { label: string; className: string }> = {
   pending: { label: "Pending", className: "bg-warn-500/12 text-warn-400 ring-warn-500/25" },
   confirmed: { label: "Confirmed", className: "bg-ok-500/12 text-ok-400 ring-ok-500/25" },
+  shipped: { label: "Shipped", className: "bg-accent-500/12 text-accent-400 ring-accent-500/25" },
+  delivered: { label: "Delivered", className: "bg-ok-500/22 text-ok-400 ring-ok-500/45" },
   cancelled: { label: "Cancelled", className: "bg-bad-500/12 text-bad-400 ring-bad-500/25" },
 };
 

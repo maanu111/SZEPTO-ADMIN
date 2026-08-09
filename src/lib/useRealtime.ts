@@ -16,6 +16,16 @@ export type RealtimeTable =
   | "pages";
 
 /**
+ * Channel names must be unique per subscription.
+ *
+ * supabase-js returns an *existing* channel when the topic matches, and adding
+ * listeners to one that has already subscribed throws. A deterministic name
+ * therefore breaks whenever two components subscribe to the same tables — or
+ * when an effect remounts before the old channel has finished unsubscribing.
+ */
+let channelSeq = 0;
+
+/**
  * Refreshes the current route whenever one of `tables` changes anywhere.
  *
  * Bursts are coalesced: a bulk import fires one refresh, not hundreds.
@@ -29,7 +39,7 @@ export function useRealtime(tables: RealtimeTable[], enabled = true) {
     if (!enabled || tables.length === 0) return;
 
     const supabase = createClient();
-    const channel = supabase.channel(`admin:${key}`);
+    const channel = supabase.channel(`admin:${key}:${(channelSeq += 1)}`);
 
     const scheduleRefresh = () => {
       if (timer.current) clearTimeout(timer.current);

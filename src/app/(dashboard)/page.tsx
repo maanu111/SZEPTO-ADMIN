@@ -26,6 +26,8 @@ const EMPTY: DashboardStats = {
   orders_total: 0,
   orders_pending: 0,
   orders_confirmed: 0,
+  orders_shipped: 0,
+  orders_delivered: 0,
   orders_cancelled: 0,
   revenue_total: 0,
   revenue_pending: 0,
@@ -161,6 +163,28 @@ export default async function DashboardPage({
             tone={stats.out_of_stock > 0 ? "bad" : "neutral"}
             href="/products"
           />
+        </div>
+
+        {/* Where every order currently sits, one click from the filtered list. */}
+        <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
+          {[
+            { label: "Pending", value: stats.orders_pending, status: "pending", tone: "text-warn-400" },
+            { label: "Confirmed", value: stats.orders_confirmed, status: "confirmed", tone: "text-ok-400" },
+            { label: "Shipped", value: stats.orders_shipped, status: "shipped", tone: "text-accent-400" },
+            { label: "Delivered", value: stats.orders_delivered, status: "delivered", tone: "text-ok-400" },
+            { label: "Cancelled", value: stats.orders_cancelled, status: "cancelled", tone: "text-bad-400" },
+          ].map((s) => (
+            <Link
+              key={s.status}
+              href={`/orders?status=${s.status}`}
+              className="flex items-center justify-between rounded-lg border border-line-soft px-3 py-2 transition-colors hover:border-line"
+            >
+              <span className="truncate text-[11px] font-medium text-fg-dim">{s.label}</span>
+              <span className={`text-[13px] font-semibold tabular-nums ${s.value > 0 ? s.tone : "text-fg-dim"}`}>
+                {s.value}
+              </span>
+            </Link>
+          ))}
         </div>
 
         <div className="grid gap-3 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
