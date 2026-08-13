@@ -176,3 +176,18 @@ export const DownloadIcon = ({ className = base, strokeWidth }: P) => (
     <path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16" {...stroke(strokeWidth)} />
   </svg>
 );
+
+export const ChartIcon = ({ className = base, strokeWidth }: P) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <path d="M4 20V4M4 20h16" {...stroke(strokeWidth)} />
+    <path d="M8 20v-6M12.5 20V9M17 20v-8.5" {...stroke(strokeWidth)} />
+  </svg>
+);
+
+export const UsersIcon = ({ className = base, strokeWidth }: P) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <circle cx="9.5" cy="8" r="3.25" {...stroke(strokeWidth)} />
+    <path d="M3.5 19.5a6 6 0 0 1 12 0" {...stroke(strokeWidth)} />
+    <path d="M16 5.4a3.25 3.25 0 0 1 0 5.2M17.5 14.4a6 6 0 0 1 3 5.1" {...stroke(strokeWidth)} />
+  </svg>
+);

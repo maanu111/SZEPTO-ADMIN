@@ -2,11 +2,13 @@ import { PageHeader } from "@/components/ui";
 import { createClient } from "@/lib/supabase/server";
 import { CategoryManager, type CategoryRecord } from "./CategoryManager";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
+import { requirePage } from "@/lib/viewer";
 
 export const metadata = { title: "Categories" };
 export const revalidate = 0;
 
 export default async function CategoriesPage() {
+  await requirePage("categories");
   const supabase = await createClient();
 
   const [{ data: categories }, { data: products }] = await Promise.all([

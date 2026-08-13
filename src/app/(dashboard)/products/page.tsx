@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { BulkGrid, type GridRow } from "./BulkGrid";
 import { ImportClient } from "./ImportClient";
 import { ProductsTable, type ProductRowView } from "./ProductsTable";
+import { requirePage } from "@/lib/viewer";
 
 export const metadata = { title: "Products" };
 export const revalidate = 0;
@@ -32,6 +33,7 @@ export default async function ProductsPage({
     page?: string;
   }>;
 }) {
+  await requirePage("products");
   const {
     view = "list",
     q = "",

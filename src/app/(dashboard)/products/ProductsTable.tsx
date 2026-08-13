@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SearchIcon } from "@/components/icons";
 import { ExportMenu } from "@/components/ExportMenu";
+import { FilterSelect } from "@/components/FilterSelect";
 import { EmptyState, LinkButton, Panel, Pill, inr } from "@/components/ui";
 
 export type ProductRowView = {
@@ -54,9 +55,13 @@ export function ProductsTable({
   return (
     <>
       <div className="mb-3 flex flex-wrap items-center gap-2">
+        {/* Searching must not silently drop the other filters, so every active
+            one rides along as a hidden field. */}
         <form action="/products" className="flex min-w-0 flex-1 items-center gap-2 sm:max-w-xs">
           <input type="hidden" name="view" value="list" />
           {category && <input type="hidden" name="category" value={category} />}
+          {status !== "all" && <input type="hidden" name="status" value={status} />}
+          {stock !== "all" && <input type="hidden" name="stock" value={stock} />}
           <div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-lg bg-shell-850 px-3 focus-within:bg-shell-800">
             <SearchIcon className="h-3.5 w-3.5 shrink-0 text-text-faint" />
             <input
@@ -69,23 +74,19 @@ export function ProductsTable({
           </div>
         </form>
 
-        <form action="/products" className="shrink-0">
-          <input type="hidden" name="view" value="list" />
-          {term && <input type="hidden" name="q" value={term} />}
-          <select
-            name="category"
-            defaultValue={category}
-            className="field h-9 w-auto min-w-[10rem] text-[12px]"
-            aria-label="Filter by category"
-          >
-            <option value="">All categories</option>
-            {categories.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </form>
+        <FilterSelect
+          value={category}
+          ariaLabel="Filter by category"
+          options={[
+            { value: "", label: "All categories", href: href({ category: "", page: "" }) },
+            ...categories.map((c) => ({
+              value: c.slug,
+              label: c.name,
+              href: href({ category: c.slug, page: "" }),
+            })),
+          ]}
+          className="shrink-0"
+        />
 
         {/* Status and stock — always on screen, one click each */}
         <FilterGroup

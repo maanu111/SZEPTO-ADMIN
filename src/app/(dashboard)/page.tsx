@@ -6,6 +6,7 @@ import { AlertIcon, BoxIcon, ChevronRight, OrdersIcon, RupeeIcon } from "@/compo
 import { EmptyState, PageHeader, Panel, StatusBadge, inr, shortDate } from "@/components/ui";
 import type { DashboardStats } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
+import { requirePage } from "@/lib/viewer";
 
 export const metadata = { title: "Dashboard" };
 export const revalidate = 0;
@@ -48,6 +49,7 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ range?: string }>;
 }) {
+  await requirePage("dashboard");
   const { range = "30d" } = await searchParams;
   const active: RangeKey = RANGES.some((r) => r.key === range) ? (range as RangeKey) : "30d";
   const days = RANGES.find((r) => r.key === active)!.days;

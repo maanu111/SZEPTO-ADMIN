@@ -13,7 +13,8 @@ export type RealtimeTable =
   | "store_settings"
   | "orders"
   | "order_items"
-  | "pages";
+  | "pages"
+  | "staff";
 
 /**
  * Channel names must be unique per subscription.

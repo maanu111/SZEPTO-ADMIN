@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import type { PageKey } from "@/lib/access";
 import { InstallButton } from "./InstallButton";
 import {
   BoltIcon,
@@ -16,29 +17,56 @@ import {
   OrdersIcon,
   QrIcon,
   TruckIcon,
+  ChartIcon,
+  UsersIcon,
 } from "./icons";
 
-type Item = { href: string; label: string; icon: typeof DashIcon; exact?: boolean };
+type Item = {
+  href: string;
+  label: string;
+  icon: typeof DashIcon;
+  exact?: boolean;
+  /** Permission key from ADMIN_PAGES; the item is hidden without it. */
+  page: PageKey;
+};
 
 /** A hairline separates groups instead of a shouted section heading. */
 const GROUPS: Item[][] = [
-  [{ href: "/", label: "Dashboard", icon: DashIcon, exact: true }],
-  [{ href: "/orders", label: "Orders", icon: OrdersIcon }],
+  [{ href: "/", label: "Dashboard", icon: DashIcon, exact: true, page: "dashboard" }],
+  [{ href: "/orders", label: "Orders", icon: OrdersIcon, page: "orders" }],
   [
-    { href: "/products", label: "Products", icon: BoxIcon },
-    { href: "/categories", label: "Categories", icon: GridIcon },
-    { href: "/banners", label: "Banners", icon: DocIcon },
+    { href: "/products", label: "Products", icon: BoxIcon, page: "products" },
+    { href: "/categories", label: "Categories", icon: GridIcon, page: "categories" },
+    { href: "/banners", label: "Banners", icon: DocIcon, page: "banners" },
   ],
+  [{ href: "/reports", label: "Reports", icon: ChartIcon, page: "reports" }],
   [
-    { href: "/settings/payment", label: "Payment", icon: QrIcon },
-    { href: "/settings/shipping", label: "Shipping", icon: TruckIcon },
-    { href: "/pages", label: "Pages", icon: DocIcon },
+    { href: "/settings/payment", label: "Payment", icon: QrIcon, page: "payment" },
+    { href: "/settings/shipping", label: "Shipping", icon: TruckIcon, page: "shipping" },
+    { href: "/pages", label: "Pages", icon: DocIcon, page: "pages" },
   ],
+  [{ href: "/staff", label: "Staff", icon: UsersIcon, page: "staff" }],
 ];
 
-export function Sidebar({ email, pendingCount }: { email: string; pendingCount: number }) {
+export function Sidebar({
+  email,
+  pendingCount,
+  allowedPages,
+  isOwner,
+}: {
+  email: string;
+  pendingCount: number;
+  allowedPages: PageKey[];
+  isOwner: boolean;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  // Hide what this person cannot open. The pages are also guarded server-side,
+  // so hiding them is tidiness rather than the security boundary.
+  const groups = GROUPS.map((g) =>
+    g.filter((item) => (item.page === "staff" ? isOwner : allowedPages.includes(item.page)))
+  ).filter((g) => g.length > 0);
 
   const isActive = (item: Item) =>
     item.exact
@@ -47,7 +75,7 @@ export function Sidebar({ email, pendingCount }: { email: string; pendingCount: 
 
   const nav = (
     <nav className="thin-scrollbar flex-1 overflow-y-auto px-2 py-2">
-      {GROUPS.map((group, i) => (
+      {groups.map((group, i) => (
         <ul
           key={group[0].href}
           className={`flex flex-col gap-px ${i > 0 ? "mt-2 border-t border-line-soft pt-2" : ""}`}

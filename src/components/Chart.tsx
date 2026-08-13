@@ -25,18 +25,19 @@ echarts.use([
 export const CHART_THEME = {
   textStyle: {
     fontFamily: "var(--font-inter), system-ui, sans-serif",
-    color: "#8a8a8a",
+    color: "#6c6c76",
   },
   tooltip: {
-    backgroundColor: "#141414",
-    borderColor: "#1c1c1c",
+    backgroundColor: "#ffffff",
+    borderColor: "#e3e3e7",
     borderWidth: 1,
     padding: [8, 10] as [number, number],
-    textStyle: { color: "#f2f2f2", fontSize: 12 },
+    textStyle: { color: "#17171a", fontSize: 12 },
+    extraCssText: "box-shadow: 0 8px 24px -8px rgba(20,20,30,0.18);",
   },
-  axisLine: { lineStyle: { color: "#1c1c1c" } },
-  splitLine: { lineStyle: { color: "#141414" } },
-  axisLabel: { color: "#5e5e5e", fontSize: 10 },
+  axisLine: { lineStyle: { color: "#e3e3e7" } },
+  splitLine: { lineStyle: { color: "#eeeef1" } },
+  axisLabel: { color: "#9b9ba4", fontSize: 10 },
 };
 
 type Props = {

@@ -52,6 +52,10 @@ export type VariantRow = {
   price: number;
   mrp: number;
   weight_kg: number;
+  /** Shipping carton size, in cm. Null means bill on actual weight only. */
+  length_cm: number | null;
+  width_cm: number | null;
+  height_cm: number | null;
   in_stock: boolean;
   is_default: boolean;
   sort_order: number;
@@ -93,7 +97,83 @@ export type StoreSettingsRow = {
   rate_per_kg: number;
   service_charge: number;
   free_shipping_over: number;
+  volumetric_divisor: number;
+  /** Bumped by a trigger whenever the catalog changes; shoppers watch this. */
+  catalog_version: number;
+  /** How many orders to keep. Older ones are deleted automatically. */
+  order_retention_limit: number;
+  whatsapp_number: string;
+  whatsapp_message: string;
+  delivery_estimate: string;
   updated_at: string;
+};
+
+export type CustomerRow = {
+  id: string;
+  /** Opaque browser token — this is what identifies the account. */
+  device_token: string;
+  phone: string;
+  whatsapp: string;
+  name: string;
+  address: string;
+  landmark: string;
+  city: string;
+  pincode: string;
+  location_source: "gps" | "manual";
+  latitude: number | null;
+  longitude: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type StaffRow = {
+  id: string;
+  email: string;
+  full_name: string;
+  phone: string;
+  role: "owner" | "manager" | "staff";
+  is_active: boolean;
+  /** Admin page keys this person may open. Owners bypass the list. */
+  allowed_pages: string[];
+  auth_user_id: string | null;
+  last_seen_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ProductReportRow = {
+  name: string;
+  slug: string;
+  category: string | null;
+  units_sold: number;
+  revenue: number;
+  stock: number;
+  is_active?: boolean;
+};
+
+export type ProductReport = {
+  top: ProductReportRow[];
+  least: ProductReportRow[];
+  all: ProductReportRow[];
+  never_sold: number;
+  products_sold: number;
+  units_total: number;
+  revenue_total: number;
+};
+
+export type SalesReport = {
+  orders_total: number;
+  orders_paid: number;
+  orders_cancelled: number;
+  gross_sales: number;
+  item_sales: number;
+  shipping_sales: number;
+  service_sales: number;
+  discounts: number;
+  weight_total: number;
+  avg_order_value: number;
+  units_total: number;
+  series: { period: string; orders: number; revenue: number; items: number; shipping: number }[];
 };
 
 export type OrderRow = {
@@ -116,6 +196,7 @@ export type OrderRow = {
   payment_ref: string;
   payment_note: string;
   status: OrderStatus;
+  customer_id: string | null;
   shipped_at: string | null;
   delivered_at: string | null;
   admin_note: string;
@@ -226,6 +307,18 @@ export type Database = {
         Update: Partial<StoreSettingsRow>;
         Relationships: [];
       };
+      customers: {
+        Row: CustomerRow;
+        Insert: Partial<CustomerRow> & { device_token: string };
+        Update: Partial<CustomerRow>;
+        Relationships: [];
+      };
+      staff: {
+        Row: StaffRow;
+        Insert: Partial<StaffRow> & { email: string };
+        Update: Partial<StaffRow>;
+        Relationships: [];
+      };
       orders: {
         Row: OrderRow;
         Insert: Partial<OrderRow> & { code: string; customer_name: string; customer_phone: string; address: string; city: string; pincode: string };
@@ -250,6 +343,14 @@ export type Database = {
       admin_dashboard_stats: {
         Args: { from_ts?: string | null; to_ts?: string | null };
         Returns: DashboardStats;
+      };
+      admin_product_report: {
+        Args: { from_ts?: string | null; to_ts?: string | null };
+        Returns: ProductReport;
+      };
+      admin_sales_report: {
+        Args: { from_ts?: string | null; to_ts?: string | null; bucket?: string };
+        Returns: SalesReport;
       };
       is_admin: { Args: Record<string, never>; Returns: boolean };
     };

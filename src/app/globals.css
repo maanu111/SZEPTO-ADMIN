@@ -1,46 +1,49 @@
 @import "tailwindcss";
 
 @theme {
-  /* True black surface — flat, minimal, no blue cast */
-  --color-shell-950: #000000;
-  --color-shell-900: #070707;
-  --color-shell-850: #0d0d0d;
-  --color-shell-800: #141414;
-  --color-shell-700: #1f1f1f;
-  --color-shell-600: #2a2a2a;
+  /* Light surface — paper white, flat, no blue cast.
+     Token names keep their dark-theme ordering: shell-950 is the page ground
+     and the scale climbs toward the strongest contrast, so every component
+     that was written against the dark palette maps over unchanged. */
+  --color-shell-950: #f6f6f7;
+  --color-shell-900: #ffffff;
+  --color-shell-850: #f1f1f3;
+  --color-shell-800: #e9e9ec;
+  --color-shell-700: #d7d7dc;
+  --color-shell-600: #b0b0b8;
 
-  --color-line: #1c1c1c;
-  --color-line-soft: #141414;
+  --color-line: #e3e3e7;
+  --color-line-soft: #eeeef1;
 
-  --color-text-hi: #f2f2f2;
-  --color-text: #b4b4b4;
-  --color-text-dim: #8a8a8a;
-  --color-text-faint: #5e5e5e;
+  --color-text-hi: #17171a;
+  --color-text: #4a4a52;
+  --color-text-dim: #6c6c76;
+  --color-text-faint: #9b9ba4;
 
   /* Brand — matches the storefront */
-  --color-brand-400: #bd6bdd;
-  --color-brand-500: #a13fc9;
-  --color-brand-600: #8425ab;
-  --color-brand-700: #6d1b8c;
+  --color-brand-400: #8425ab;
+  --color-brand-500: #7a1f9f;
+  --color-brand-600: #6d1b8c;
+  --color-brand-700: #5a1573;
 
-  --color-accent-400: #f45fa4;
+  --color-accent-400: #c9106c;
   --color-accent-500: #e5147e;
-  --color-accent-600: #c9106c;
+  --color-accent-600: #a80d59;
 
-  /* Status */
-  --color-ok-400: #34d399;
+  /* Status — darkened so they stay legible on a light ground */
+  --color-ok-400: #047857;
   --color-ok-500: #10b981;
-  --color-warn-400: #fbbf24;
+  --color-warn-400: #a16207;
   --color-warn-500: #f59e0b;
-  --color-bad-400: #f87171;
+  --color-bad-400: #dc2626;
   --color-bad-500: #ef4444;
-  --color-info-400: #60a5fa;
+  --color-info-400: #2563eb;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
 
   --shadow-panel: none;
-  --shadow-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.9);
+  --shadow-pop: 0 12px 32px -8px rgba(20, 20, 30, 0.18);
 
   --animate-shimmer: shimmer 1.4s linear infinite;
   --animate-rise: rise 0.28s cubic-bezier(0.16, 1, 0.3, 1);
@@ -58,7 +61,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {

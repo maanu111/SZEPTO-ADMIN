@@ -34,7 +34,7 @@ export function RevenueChart({ data }: { data: Point[] }) {
       tooltip: {
         trigger: "axis" as const,
         ...CHART_THEME.tooltip,
-        axisPointer: { type: "shadow" as const, shadowStyle: { color: "rgba(255,255,255,0.03)" } },
+        axisPointer: { type: "shadow" as const, shadowStyle: { color: "rgba(20,20,30,0.04)" } },
         formatter: (params: unknown) => {
           const rows = params as { name: string; seriesName: string; value: number }[];
           if (!rows?.length) return "";
@@ -46,7 +46,7 @@ export function RevenueChart({ data }: { data: Point[] }) {
           const orders = rows.find((r) => r.seriesName === "Orders")?.value ?? 0;
           return `<div style="font-weight:600;margin-bottom:2px">${label}</div>
             <div>${inr(revenue)}</div>
-            <div style="color:#8a8a8a">${orders} order${orders === 1 ? "" : "s"}</div>`;
+            <div style="color:#6c6c76">${orders} order${orders === 1 ? "" : "s"}</div>`;
         },
       },
       xAxis: {
@@ -100,8 +100,8 @@ export function RevenueChart({ data }: { data: Point[] }) {
           smooth: true,
           symbol: "circle",
           symbolSize: 5,
-          lineStyle: { width: 1.5, color: "#5e5e5e" },
-          itemStyle: { color: "#8a8a8a" },
+          lineStyle: { width: 1.5, color: "#b0b0b8" },
+          itemStyle: { color: "#9b9ba4" },
         },
       ],
     }),

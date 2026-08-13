@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/ui";
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "../ProductForm";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
+import { requirePage } from "@/lib/viewer";
 
 export const revalidate = 0;
 
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  await requirePage("products");
   const { id } = await params;
   const supabase = await createClient();
 

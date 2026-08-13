@@ -54,7 +54,7 @@ export function PageHeader({
 /* ---------------------------------------------------------------- buttons */
 
 const VARIANTS = {
-  primary: "bg-text-hi text-shell-950 hover:bg-white disabled:bg-shell-800 disabled:text-text-faint",
+  primary: "bg-text-hi text-shell-900 hover:bg-text disabled:bg-shell-800 disabled:text-text-faint",
   secondary: "bg-shell-850 text-text-hi hover:bg-shell-800 disabled:text-text-faint",
   ghost: "text-text-dim hover:bg-shell-850 hover:text-text-hi",
   ok: "bg-ok-500/15 text-ok-400 hover:bg-ok-500/25 disabled:text-text-faint",

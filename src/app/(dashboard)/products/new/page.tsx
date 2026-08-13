@@ -3,11 +3,13 @@ import { ChevronLeft } from "@/components/icons";
 import { PageHeader } from "@/components/ui";
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "../ProductForm";
+import { requirePage } from "@/lib/viewer";
 
 export const metadata = { title: "New product" };
 export const revalidate = 0;
 
 export default async function NewProductPage() {
+  await requirePage("products");
   const supabase = await createClient();
   const { data: categories } = await supabase
     .from("categories")

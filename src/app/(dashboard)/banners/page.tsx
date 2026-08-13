@@ -2,11 +2,13 @@ import { PageHeader } from "@/components/ui";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
 import { createClient } from "@/lib/supabase/server";
 import { BannersManager, type BannerRecord } from "./BannersManager";
+import { requirePage } from "@/lib/viewer";
 
 export const metadata = { title: "Banners" };
 export const revalidate = 0;
 
 export default async function BannersPage() {
+  await requirePage("banners");
   const supabase = await createClient();
 
   const { data } = await supabase

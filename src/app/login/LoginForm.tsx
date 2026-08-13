@@ -31,15 +31,24 @@ export function LoginForm({ hasOwner }: { hasOwner: boolean }) {
       return false;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", data.user.id)
-      .maybeSingle();
+    // The owner is flagged on `profiles`; staff have a row in `staff`. Either
+    // is a valid sign-in, so both are checked before the session is thrown away.
+    const [{ data: profile }, { data: staff }] = await Promise.all([
+      supabase.from("profiles").select("is_admin").eq("id", data.user.id).maybeSingle(),
+      supabase
+        .from("staff")
+        .select("is_active")
+        .or(`auth_user_id.eq.${data.user.id},email.eq.${data.user.email ?? ""}`)
+        .maybeSingle(),
+    ]);
 
-    if (!profile?.is_admin) {
+    if (!profile?.is_admin && !staff?.is_active) {
       await supabase.auth.signOut();
-      setError("This account can't access the dashboard.");
+      setError(
+        staff && !staff.is_active
+          ? "This account has been switched off."
+          : "This account can't access the dashboard."
+      );
       return false;
     }
     return true;

@@ -24,9 +24,17 @@ export async function saveShippingSettings(input: {
   rate_per_kg: number;
   service_charge: number;
   free_shipping_over: number;
+  volumetric_divisor: number;
+  delivery_estimate: string;
+  whatsapp_number: string;
+  whatsapp_message: string;
 }): Promise<ActionResult> {
   if (input.rate_per_kg < 0 || input.service_charge < 0 || input.free_shipping_over < 0) {
     return { ok: false, error: "Charges can't be negative." };
+  }
+  // Dividing by zero would make every parcel infinitely heavy.
+  if (input.volumetric_divisor < 1) {
+    return { ok: false, error: "Volumetric divisor must be at least 1." };
   }
 
   const supabase = await createClient();

@@ -2,11 +2,13 @@ import { PageHeader } from "@/components/ui";
 import { createClient } from "@/lib/supabase/server";
 import { PagesManager, type PageRecord } from "./PagesManager";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
+import { requirePage } from "@/lib/viewer";
 
 export const metadata = { title: "Pages" };
 export const revalidate = 0;
 
 export default async function PagesPage() {
+  await requirePage("pages");
   const supabase = await createClient();
   const { data } = await supabase
     .from("pages")

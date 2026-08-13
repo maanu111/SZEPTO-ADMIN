@@ -6,6 +6,7 @@ import { PageHeader, Panel, StatusBadge, fullDate, inr } from "@/components/ui";
 import { createClient } from "@/lib/supabase/server";
 import { OrderActions } from "./OrderActions";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
+import { requirePage } from "@/lib/viewer";
 
 export const revalidate = 0;
 
@@ -17,6 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  await requirePage("orders");
   const { id } = await params;
   const supabase = await createClient();
 

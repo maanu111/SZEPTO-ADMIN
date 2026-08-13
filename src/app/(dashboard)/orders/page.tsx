@@ -5,6 +5,7 @@ import { EmptyState, PageHeader, Panel, StatusBadge, inr, shortDate } from "@/co
 import type { OrderStatus } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
+import { requirePage } from "@/lib/viewer";
 
 export const metadata = { title: "Orders" };
 export const revalidate = 0;
@@ -25,6 +26,7 @@ export default async function OrdersPage({
 }: {
   searchParams: Promise<{ status?: string; q?: string; range?: string; page?: string }>;
 }) {
+  await requirePage("orders");
   const { status = "all", q = "", range = "all", page = "1" } = await searchParams;
 
   // Date window
@@ -71,10 +73,32 @@ export default async function OrdersPage({
   const total = count ?? 0;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
+  /**
+   * How many orders each chip would show.
+   *
+   * Deliberately ignores the current status filter — a chip must report its own
+   * size, not the size of whatever is selected — but respects the date window
+   * and the search term so the numbers match what clicking it actually yields.
+   */
+  const countFor = async (value: string) => {
+    let c = supabase.from("orders").select("id", { count: "exact", head: true });
+    if (value !== "all") c = c.eq("status", value as OrderStatus);
+    if (fromTs) c = c.gte("created_at", fromTs);
+    if (term) {
+      c = c.or(
+        `code.ilike.%${term}%,customer_name.ilike.%${term}%,customer_phone.ilike.%${term}%`
+      );
+    }
+    const { count: n } = await c;
+    return [value, n ?? 0] as const;
+  };
+  const filterCounts = Object.fromEntries(await Promise.all(FILTERS.map((f) => countFor(f.value))));
+
   const buildHref = (patch: Record<string, string>) => {
     const sp = new URLSearchParams();
     if (status !== "all") sp.set("status", status);
     if (term) sp.set("q", term);
+    if (range !== "all") sp.set("range", range);
     if (pageNum > 1) sp.set("page", String(pageNum));
     for (const [k, v] of Object.entries(patch)) {
       if (v) sp.set(k, v);
@@ -100,16 +124,21 @@ export default async function OrdersPage({
             const sp = new URLSearchParams();
             if (f.value !== "all") sp.set("status", f.value);
             if (term) sp.set("q", term);
+            if (range !== "all") sp.set("range", range);
             const s = sp.toString();
+            const n = filterCounts[f.value] ?? 0;
             return (
               <Link
                 key={f.value}
                 href={s ? `/orders?${s}` : "/orders"}
-                className={`rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors ${
                   active ? "bg-shell-800 text-text-hi" : "text-text-dim hover:text-text-hi"
                 }`}
               >
                 {f.label}
+                <span className={`tnum text-[11px] ${active ? "text-text-dim" : "text-text-faint"}`}>
+                  {n}
+                </span>
               </Link>
             );
           })}
