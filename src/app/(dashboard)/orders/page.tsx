@@ -199,7 +199,7 @@ export default async function OrdersPage({
               total: o.total,
               status: o.status,
             }))}
-            filename="szepto-orders"
+            filename="kiranaclick-orders"
             captureId="orders-capture"
           />
         </span>

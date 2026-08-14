@@ -15,7 +15,7 @@ export const ADMIN_PAGES = [
   { key: "banners", label: "Banners", path: "/banners" },
   { key: "reports", label: "Reports", path: "/reports" },
   { key: "payment", label: "Payment", path: "/settings/payment" },
-  { key: "shipping", label: "Shipping", path: "/settings/shipping" },
+  { key: "shipping", label: "Delivery", path: "/settings/shipping" },
   { key: "pages", label: "Pages", path: "/pages" },
   { key: "staff", label: "Staff", path: "/staff" },
 ] as const;

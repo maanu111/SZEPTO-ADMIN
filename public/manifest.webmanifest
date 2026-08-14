@@ -1,13 +1,13 @@
 {
-  "name": "SZepto Admin",
-  "short_name": "SZepto",
+  "name": "Kiranaclick Admin",
+  "short_name": "Kiranaclick",
   "description": "Store command centre — orders, catalog, payments and shipping.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#f6f6f7",
+  "theme_color": "#087828",
   "categories": ["business", "productivity"],
   "icons": [
     {

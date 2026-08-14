@@ -25,7 +25,7 @@ export default async function PaymentSettingsPage() {
         initial={{
           qr_url: data?.qr_url ?? null,
           upi_id: data?.upi_id ?? "",
-          payee_name: data?.payee_name ?? "SZepto Retail",
+          payee_name: data?.payee_name ?? "Kiranaclick Retail",
           payment_note: data?.payment_note ?? "",
         }}
       />

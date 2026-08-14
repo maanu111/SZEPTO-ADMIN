@@ -111,7 +111,7 @@ export function BulkGrid({ initial }: { initial: GridRow[] }) {
         price: r.price,
         active: r.is_active ? "yes" : "no",
       })),
-      "szepto-products",
+      "kiranaclick-products",
       format
     );
 

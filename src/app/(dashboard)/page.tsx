@@ -63,15 +63,17 @@ export default async function DashboardPage({
   }
 
   const supabase = await createClient();
-  const [{ data: statsData }, { data: recent }, { data: settings }] = await Promise.all([
-    supabase.rpc("admin_dashboard_stats", { from_ts: fromTs, to_ts: null }),
-    supabase
-      .from("orders")
-      .select("id, code, customer_name, city, total, status, created_at")
-      .order("created_at", { ascending: false })
-      .limit(8),
-    supabase.from("store_settings").select("qr_url, rate_per_kg, service_charge").maybeSingle(),
-  ]);
+  const [{ data: statsData }, { data: recent }, { data: settings }, { count: bandCount }] =
+    await Promise.all([
+      supabase.rpc("admin_dashboard_stats", { from_ts: fromTs, to_ts: null }),
+      supabase
+        .from("orders")
+        .select("id, code, customer_name, city, total, status, created_at")
+        .order("created_at", { ascending: false })
+        .limit(8),
+      supabase.from("store_settings").select("qr_url, service_charge").maybeSingle(),
+      supabase.from("shipping_rates").select("id", { count: "exact", head: true }),
+    ]);
 
   const stats: DashboardStats = { ...EMPTY, ...(statsData as DashboardStats | null) };
   const orders = recent ?? [];
@@ -91,7 +93,7 @@ export default async function DashboardPage({
         action={
           <ExportMenu
             rows={exportRows}
-            filename={`szepto-dashboard-${active}`}
+            filename={`kiranaclick-dashboard-${active}`}
             captureId="dashboard-capture"
           />
         }
@@ -261,8 +263,8 @@ export default async function DashboardPage({
         {settings && (
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <MiniStat
-              label="Shipping rate"
-              value={`${inr(settings.rate_per_kg)} / kg`}
+              label="Delivery bands"
+              value={!bandCount ? "Not set" : `${bandCount} band${bandCount === 1 ? "" : "s"}`}
               href="/settings/shipping"
             />
             <MiniStat

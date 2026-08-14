@@ -21,7 +21,6 @@ export async function savePaymentSettings(input: {
 }
 
 export async function saveShippingSettings(input: {
-  rate_per_kg: number;
   service_charge: number;
   free_shipping_over: number;
   volumetric_divisor: number;
@@ -29,7 +28,7 @@ export async function saveShippingSettings(input: {
   whatsapp_number: string;
   whatsapp_message: string;
 }): Promise<ActionResult> {
-  if (input.rate_per_kg < 0 || input.service_charge < 0 || input.free_shipping_over < 0) {
+  if (input.service_charge < 0 || input.free_shipping_over < 0) {
     return { ok: false, error: "Charges can't be negative." };
   }
   // Dividing by zero would make every parcel infinitely heavy.
@@ -43,5 +42,42 @@ export async function saveShippingSettings(input: {
 
   revalidatePath("/settings/shipping");
   revalidatePath("/");
+  return { ok: true };
+}
+
+/**
+ * Replace the weight bands wholesale.
+ *
+ * Rewriting the set is simpler and safer than diffing it: a partial update
+ * could leave a gap between two bands, and a gap means an order that matches
+ * no band at all.
+ */
+export async function saveShippingRates(
+  bands: { min_kg: number; max_kg: number | null; price: number; sort_order: number }[]
+): Promise<ActionResult> {
+  if (bands.length === 0) return { ok: false, error: "Keep at least one band." };
+
+  for (const b of bands) {
+    if (b.price < 0) return { ok: false, error: "A band can't cost less than nothing." };
+    if (b.max_kg !== null && b.max_kg <= b.min_kg) {
+      return { ok: false, error: "Each band must end above where it starts." };
+    }
+  }
+  if (bands.slice(0, -1).some((b) => b.max_kg === null)) {
+    return { ok: false, error: "Only the last band can be left open-ended." };
+  }
+
+  const supabase = await createClient();
+
+  const { error: clearError } = await supabase
+    .from("shipping_rates")
+    .delete()
+    .gte("price", -1); // deletes every row; PostgREST refuses an unfiltered delete
+  if (clearError) return { ok: false, error: clearError.message };
+
+  const { error } = await supabase.from("shipping_rates").insert(bands);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath("/settings/shipping");
   return { ok: true };
 }

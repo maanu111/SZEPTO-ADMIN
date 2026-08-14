@@ -1,5 +1,5 @@
 /**
- * Service worker for the SZepto admin PWA.
+ * Service worker for the Kiranaclick admin PWA.
  *
  * Deliberately conservative: the dashboard shows live order and payment data, so
  * nothing from the network is cached and served stale. Only the static app shell

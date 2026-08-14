@@ -115,7 +115,7 @@ export function LoginForm({ hasOwner }: { hasOwner: boolean }) {
     <div className="w-full max-w-sm">
       <div className="mb-7 flex flex-col items-center text-center">
         <BoltIcon className="h-6 w-6 text-accent-500" />
-        <h1 className="mt-3 text-lg font-semibold text-text-hi">SZepto Admin</h1>
+        <h1 className="mt-3 text-lg font-semibold text-text-hi">Kiranaclick Admin</h1>
         <p className="mt-1 text-[13px] text-text-dim">
           {hasOwner ? "Sign in to your store dashboard" : "Set up your owner account"}
         </p>

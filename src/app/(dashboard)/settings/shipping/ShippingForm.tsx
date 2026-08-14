@@ -3,11 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { CheckIcon } from "@/components/icons";
-import { Button, ErrorNote, Panel, inr } from "@/components/ui";
+import { Button, ErrorNote, Panel } from "@/components/ui";
 import { saveShippingSettings } from "../actions";
 
 type Values = {
-  rate_per_kg: number;
   service_charge: number;
   free_shipping_over: number;
   volumetric_divisor: number;
@@ -15,9 +14,6 @@ type Values = {
   whatsapp_number: string;
   whatsapp_message: string;
 };
-
-/** Sample consignments so the admin sees the effect of a change immediately. */
-const PREVIEW_WEIGHTS = [0.5, 2, 3.5, 10];
 
 /** A carton the customer might order: big, light, and billed on its size. */
 const PREVIEW_BOX = { l: 40, w: 30, h: 25, actualKg: 1.2 };
@@ -57,18 +53,6 @@ export function ShippingForm({ initial }: { initial: Values }) {
       <div className="flex flex-col gap-4">
         <Panel title="Charges">
           <div className="grid gap-3.5 sm:grid-cols-2">
-            <label className="block">
-              <span className="label">Shipping rate per kg (₹)</span>
-              <input
-                type="number"
-                min={0}
-                step={1}
-                value={values.rate_per_kg}
-                onChange={(e) => setNum("rate_per_kg", e.target.value)}
-                className="field tnum"
-              />
-            </label>
-
             <label className="block">
               <span className="label">Service charge (₹)</span>
               <input
@@ -146,17 +130,20 @@ export function ShippingForm({ initial }: { initial: Values }) {
           </div>
         </Panel>
 
-        <Panel title="Oversized items">
+        <Panel title="Big but light items">
           <p className="mb-3 text-[12px] leading-relaxed text-text-dim">
-            A large but light carton takes up space a heavier parcel would have paid for, so
-            carriers bill whichever is greater: what it weighs, or{" "}
-            <span className="font-semibold text-text-hi">length × width × height ÷ divisor</span>.
-            Set each product&apos;s carton size on its variants; anything left blank is billed on
-            weight alone.
+            A big box of light things — snacks, tissue rolls, cereal — fills up the delivery van
+            but weighs almost nothing. Couriers charge for the space it takes, not just its weight.
+          </p>
+          <p className="mb-3 text-[12px] leading-relaxed text-text-dim">
+            This setting turns a box&apos;s <span className="font-semibold text-text-hi">size</span>{" "}
+            into a <span className="font-semibold text-text-hi">weight</span>, and the customer is
+            charged on whichever is bigger. Add each product&apos;s box size on its page; leave it
+            blank and that product is charged on its real weight only.
           </p>
 
           <label className="block sm:max-w-[calc(50%-0.4375rem)]">
-            <span className="label">Volumetric divisor</span>
+            <span className="label">Box size setting</span>
             <input
               type="number"
               min={1}
@@ -166,8 +153,9 @@ export function ShippingForm({ initial }: { initial: Values }) {
               className="field tnum"
             />
           </label>
-          <p className="mt-1.5 text-[11px] text-text-faint">
-            5000 is the usual air-freight figure. 4000 charges more for the same box.
+          <p className="mt-1.5 text-[11px] leading-relaxed text-text-faint">
+            This is not a price. Leave it at 5000 unless your courier tells you otherwise. A smaller
+            number charges more for big boxes.
           </p>
 
           {error && (
@@ -190,50 +178,28 @@ export function ShippingForm({ initial }: { initial: Values }) {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Panel title="Preview">
-          <ul className="flex flex-col divide-y divide-line-soft">
-            {PREVIEW_WEIGHTS.map((kg) => {
-              const shipping = Math.round(kg * values.rate_per_kg);
-              return (
-                <li key={kg} className="flex items-center justify-between gap-3 py-2.5">
-                  <span className="text-[12px] text-text-dim">
-                    <span className="tnum font-semibold text-text-hi">{kg} kg</span> consignment
-                  </span>
-                  <span className="text-right">
-                    <span className="tnum block text-[13px] font-semibold text-text-hi">
-                      {inr(shipping + values.service_charge)}
-                    </span>
-                    <span className="tnum block text-[10px] text-text-faint">
-                      {inr(shipping)} + {inr(values.service_charge)}
-                    </span>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </Panel>
-
-        <Panel title="Big empty box">
-          <p className="text-[12px] text-text-dim">
-            A {PREVIEW_BOX.l}×{PREVIEW_BOX.w}×{PREVIEW_BOX.h} cm carton weighing only{" "}
+        <Panel title="Example">
+          <p className="text-[12px] leading-relaxed text-text-dim">
+            A box {PREVIEW_BOX.l} × {PREVIEW_BOX.w} × {PREVIEW_BOX.h} cm that weighs only{" "}
             <span className="tnum font-semibold text-text-hi">{PREVIEW_BOX.actualKg} kg</span>:
           </p>
           <ul className="mt-2.5 flex flex-col divide-y divide-line-soft">
             <li className="flex items-center justify-between py-2 text-[12px]">
-              <span className="text-text-dim">Actual weight</span>
+              <span className="text-text-dim">What it really weighs</span>
               <span className="tnum text-text">{PREVIEW_BOX.actualKg} kg</span>
             </li>
             <li className="flex items-center justify-between py-2 text-[12px]">
-              <span className="text-text-dim">Volumetric ÷ {divisor}</span>
+              <span className="text-text-dim">What its size counts as</span>
               <span className="tnum text-text">{boxVolumetric.toFixed(2)} kg</span>
             </li>
             <li className="flex items-center justify-between py-2 text-[12px]">
-              <span className="font-semibold text-text-hi">Billed at</span>
-              <span className="tnum font-semibold text-accent-400">
-                {boxBilled.toFixed(2)} kg &middot; {inr(Math.round(boxBilled * values.rate_per_kg))}
-              </span>
+              <span className="font-semibold text-text-hi">Customer is charged for</span>
+              <span className="tnum font-semibold text-accent-400">{boxBilled.toFixed(2)} kg</span>
             </li>
           </ul>
+          <p className="mt-2.5 text-[11px] leading-relaxed text-text-faint">
+            That weight then picks its price from the bands above.
+          </p>
         </Panel>
       </div>
     </form>

@@ -1,12 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { PageKey } from "@/lib/access";
 import { InstallButton } from "./InstallButton";
 import {
-  BoltIcon,
   BoxIcon,
   CloseIcon,
   DashIcon,
@@ -42,7 +42,7 @@ const GROUPS: Item[][] = [
   [{ href: "/reports", label: "Reports", icon: ChartIcon, page: "reports" }],
   [
     { href: "/settings/payment", label: "Payment", icon: QrIcon, page: "payment" },
-    { href: "/settings/shipping", label: "Shipping", icon: TruckIcon, page: "shipping" },
+    { href: "/settings/shipping", label: "Delivery", icon: TruckIcon, page: "shipping" },
     { href: "/pages", label: "Pages", icon: DocIcon, page: "pages" },
   ],
   [{ href: "/staff", label: "Staff", icon: UsersIcon, page: "staff" }],
@@ -131,10 +131,10 @@ export function Sidebar({
     </div>
   );
 
+  // The wordmark is part of the artwork, so no text beside it.
   const brand = (
-    <div className="flex h-12 shrink-0 items-center gap-2 px-3.5">
-      <BoltIcon className="h-3.5 w-3.5 text-accent-500" />
-      <span className="text-[13px] font-semibold tracking-tight text-text-hi">SZepto</span>
+    <div className="flex h-14 shrink-0 items-center px-3.5">
+      <Image src="/logo.png" alt="Kiranaclick" width={816} height={442} priority className="h-8 w-auto" />
     </div>
   );
 

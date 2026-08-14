@@ -33,7 +33,7 @@ export default async function NewProductPage() {
         initial={{
           slug: "",
           name: "",
-          brand: "SZepto Select",
+          brand: "Kiranaclick Select",
           category_id: categories?.[0]?.id ?? null,
           description: "",
           unit: "1 kg",

@@ -99,9 +99,16 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             {/* Bill — the same maths the customer saw */}
             <dl className="border-t border-line-soft px-4 py-3 text-[12px]">
               <Row label="Item total" value={inr(order.item_total)} />
+              {/* Shipping is priced by weight band now, so show the weight
+                  that chose the band rather than a per-kg rate that no longer
+                  exists (older orders still carry their original rate). */}
               <Row
                 label="Shipping"
-                sub={`${Number(order.weight_kg).toFixed(2)} kg × ${inr(order.rate_per_kg)}/kg`}
+                sub={
+                  order.rate_per_kg > 0
+                    ? `${Number(order.weight_kg).toFixed(2)} kg × ${inr(order.rate_per_kg)}/kg`
+                    : `${Number(order.weight_kg).toFixed(2)} kg band`
+                }
                 value={inr(order.shipping_cost)}
               />
               <Row
@@ -194,7 +201,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <Panel title="Consignment">
             <dl className="flex flex-col gap-2 text-[12px]">
               <Row label="Billable weight" value={`${Number(order.weight_kg).toFixed(2)} kg`} />
-              <Row label="Rate applied" value={`${inr(order.rate_per_kg)} / kg`} />
+              {order.rate_per_kg > 0 && (
+                <Row label="Rate applied" value={`${inr(order.rate_per_kg)} / kg`} />
+              )}
+              <Row label="Shipping charged" value={inr(order.shipping_cost)} />
               <Row label="Items" value={String(itemCount)} />
             </dl>
           </Panel>

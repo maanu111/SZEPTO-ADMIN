@@ -124,7 +124,7 @@ export function ProductsTable({
               stock: p.stock,
               live: p.is_active ? "yes" : "no",
             }))}
-            filename="szepto-products"
+            filename="kiranaclick-products"
             captureId="products-capture"
           />
         </span>

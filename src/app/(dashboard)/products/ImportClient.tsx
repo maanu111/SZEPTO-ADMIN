@@ -96,7 +96,7 @@ function toParsedRow(raw: Record<string, unknown>, line: number, categorySlugs: 
     product: {
       slug,
       name,
-      brand: String(mapped.brand ?? "").trim() || "SZepto Select",
+      brand: String(mapped.brand ?? "").trim() || "Kiranaclick Select",
       category,
       unit,
       description: String(mapped.description ?? "").trim(),

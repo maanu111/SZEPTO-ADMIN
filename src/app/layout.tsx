@@ -6,13 +6,13 @@ import "./globals.css";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "SZepto Admin", template: "%s · SZepto Admin" },
+  title: { default: "Kiranaclick Admin", template: "%s · Kiranaclick Admin" },
   description: "Store command centre — orders, catalog, payments and shipping.",
   robots: { index: false, follow: false },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    title: "SZepto Admin",
+    title: "Kiranaclick Admin",
     statusBarStyle: "black-translucent",
   },
   icons: {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#f6f6f7",
   width: "device-width",
   initialScale: 1,
 };

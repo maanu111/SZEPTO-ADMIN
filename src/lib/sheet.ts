@@ -104,7 +104,7 @@ export function downloadTemplate(format: "csv" | "xlsx") {
       {
         slug: "basmati-rice",
         name: "Basmati Rice",
-        brand: "SZepto Select",
+        brand: "Kiranaclick Select",
         category: "atta-rice-oil",
         unit: "5 kg",
         description: "Long grain aged basmati rice.",
@@ -116,7 +116,7 @@ export function downloadTemplate(format: "csv" | "xlsx") {
         packs: "1 kg|1 kg|109|119|1;5 kg|5 kg|459|549|5;10 kg|10 kg|809|1049|10",
       },
     ],
-    "szepto-products-template",
+    "kiranaclick-products-template",
     format
   );
 }

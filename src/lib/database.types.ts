@@ -108,6 +108,16 @@ export type StoreSettingsRow = {
   updated_at: string;
 };
 
+export type ShippingRateRow = {
+  id: string;
+  min_kg: number;
+  /** Null means "and above" — the open-ended top band. */
+  max_kg: number | null;
+  price: number;
+  sort_order: number;
+  created_at: string;
+};
+
 export type CustomerRow = {
   id: string;
   /** Opaque browser token — this is what identifies the account. */
@@ -305,6 +315,12 @@ export type Database = {
         Row: StoreSettingsRow;
         Insert: Partial<StoreSettingsRow> & Record<string, never>;
         Update: Partial<StoreSettingsRow>;
+        Relationships: [];
+      };
+      shipping_rates: {
+        Row: ShippingRateRow;
+        Insert: Partial<ShippingRateRow>;
+        Update: Partial<ShippingRateRow>;
         Relationships: [];
       };
       customers: {
