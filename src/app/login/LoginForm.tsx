@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { BoltIcon } from "@/components/icons";
 import { Button, ErrorNote } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
 import { claimOwnerAccount } from "./actions";
@@ -114,8 +115,16 @@ export function LoginForm({ hasOwner }: { hasOwner: boolean }) {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-7 flex flex-col items-center text-center">
-        <BoltIcon className="h-6 w-6 text-accent-500" />
-        <h1 className="mt-3 text-lg font-semibold text-text-hi">Kiranaclick Admin</h1>
+        {/* The wordmark carries the brand; the heading only says which app. */}
+        <Image
+          src="/logo.png"
+          alt="Kiranaclick"
+          width={816}
+          height={442}
+          priority
+          className="h-11 w-auto"
+        />
+        <h1 className="mt-3 text-lg font-semibold text-text-hi">Admin</h1>
         <p className="mt-1 text-[13px] text-text-dim">
           {hasOwner ? "Sign in to your store dashboard" : "Set up your owner account"}
         </p>
